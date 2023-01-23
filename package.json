@@ -7,8 +7,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix --ext .ts,tsx .",
-    "lint:fix": "eslint --fix --ext .ts,tsx .",
+    "lint": "eslint --fix --ext .ts,tsx packages",
+    "lint:fix": "eslint --fix --ext .ts,tsx packages",
     "format": "prettier --write . '!.tmp'",
     "prepare": "husky install"
   },
