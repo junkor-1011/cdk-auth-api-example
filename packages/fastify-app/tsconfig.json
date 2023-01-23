@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "lib": ["esnext"],
+    "module": "commonjs",
+    "baseUrl": "./",
+    "paths": {
+      "$api/*": ["src/*"]
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules", "dist"]
+}
