@@ -314,6 +314,25 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::Cognito::UserPoolClient",
     },
+    "cognitoAuthorizer9878DCCA": {
+      "Properties": {
+        "IdentitySource": "method.request.header.Authorization",
+        "Name": "TestStackcognitoAuthorizer0B998B55",
+        "ProviderARNs": [
+          {
+            "Fn::GetAtt": [
+              "UserPool6BA7E5F2",
+              "Arn",
+            ],
+          },
+        ],
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+        "Type": "COGNITO_USER_POOLS",
+      },
+      "Type": "AWS::ApiGateway::Authorizer",
+    },
     "preTokenGenerationLambda1F130400": {
       "DependsOn": [
         "preTokenGenerationLambdaServiceRole0C3B4FA0",
@@ -372,127 +391,6 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "webapiANYApiPermissionTestStackwebapi752F84DBANY564D8EBF": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "FastifyAppLambda6A8D8BC0",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              {
-                "Ref": "webapiFE47F609",
-              },
-              "/",
-              {
-                "Ref": "webapiDeploymentStageprodB0DEAB38",
-              },
-              "/*/",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "webapiANYApiPermissionTestTestStackwebapi752F84DBANYC070C9F7": {
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "FastifyAppLambda6A8D8BC0",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Join": [
-            "",
-            [
-              "arn:",
-              {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:",
-              {
-                "Ref": "AWS::Region",
-              },
-              ":",
-              {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              {
-                "Ref": "webapiFE47F609",
-              },
-              "/test-invoke-stage/*/",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "webapiANYDF1A0DBA": {
-      "Properties": {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "ANY",
-        "Integration": {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:",
-                {
-                  "Ref": "AWS::Region",
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "FastifyAppLambda6A8D8BC0",
-                    "Arn",
-                  ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": {
-          "Fn::GetAtt": [
-            "webapiFE47F609",
-            "RootResourceId",
-          ],
-        },
-        "RestApiId": {
-          "Ref": "webapiFE47F609",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
     "webapiAccount1B71C2D2": {
       "DeletionPolicy": "Retain",
       "DependsOn": [
@@ -542,11 +440,10 @@ exports[`snapshot test 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "webapiDeployment17CB5080d0cafb4ae4e620b33bb49333e361d4c8": {
+    "webapiDeployment17CB5080f6f65390c1ca02a1ce07bb6c135b02bd": {
       "DependsOn": [
         "webapiproxyANY43102169",
         "webapiproxy467AA9A9",
-        "webapiANYDF1A0DBA",
       ],
       "Properties": {
         "Description": "Automatically created by the RestApi construct",
@@ -562,7 +459,7 @@ exports[`snapshot test 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "webapiDeployment17CB5080d0cafb4ae4e620b33bb49333e361d4c8",
+          "Ref": "webapiDeployment17CB5080f6f65390c1ca02a1ce07bb6c135b02bd",
         },
         "RestApiId": {
           "Ref": "webapiFE47F609",
@@ -573,7 +470,7 @@ exports[`snapshot test 1`] = `
     },
     "webapiFE47F609": {
       "Properties": {
-        "Name": "webapi",
+        "Name": "test-webapi",
       },
       "Type": "AWS::ApiGateway::RestApi",
     },
@@ -594,7 +491,10 @@ exports[`snapshot test 1`] = `
     },
     "webapiproxyANY43102169": {
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "COGNITO_USER_POOLS",
+        "AuthorizerId": {
+          "Ref": "cognitoAuthorizer9878DCCA",
+        },
         "HttpMethod": "ANY",
         "Integration": {
           "IntegrationHttpMethod": "POST",

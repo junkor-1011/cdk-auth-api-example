@@ -38,6 +38,10 @@ export class CdkAppStack extends Stack {
 
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGenerationLambda);
 
+    const cognitoAuthorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'cognitoAuthorizer', {
+      cognitoUserPools: [userPool],
+    });
+
     const backend = new NodejsFunction(this, 'FastifyAppLambda', {
       entry: '../fastify-app/lambda.ts',
       handler: 'handler',
@@ -48,14 +52,25 @@ export class CdkAppStack extends Stack {
       },
       environment: {
         USERPOOL_CLIENT_ID: appClient.userPoolClientId,
-        USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.toString(), // TMP TODO: handling secret value
+        USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
       },
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const api = new apigateway.LambdaRestApi(this, 'webapi', {
-      handler: backend,
-      proxy: true,
+    // const api = new apigateway.LambdaRestApi(this, 'webapi', {
+    //   handler: backend,
+    //   proxy: true,
+    // });
+
+    const api = new apigateway.RestApi(this, 'webapi', {
+      restApiName: 'test-webapi',
     });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const apiMain = api.root
+      .addResource('{proxy+}')
+      .addMethod('ANY', new apigateway.LambdaIntegration(backend), {
+        authorizer: cognitoAuthorizer,
+      });
   }
 }
