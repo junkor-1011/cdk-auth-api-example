@@ -38,6 +38,60 @@ exports[`snapshot test 1`] = `
     },
   },
   "Resources": {
+    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+      "DependsOn": [
+        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "HASH-REPLACED.zip",
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "FastifyAppLambda6A8D8BC0": {
       "DependsOn": [
         "FastifyAppLambdaServiceRole7FA32586",
@@ -52,6 +106,15 @@ exports[`snapshot test 1`] = `
         "Environment": {
           "Variables": {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "USERPOOL_CLIENT_ID": {
+              "Ref": "UserPoolappclientE1BF3384",
+            },
+            "USERPOOL_CLIENT_SECRET": {
+              "Fn::GetAtt": [
+                "UserPoolappclientDescribeCognitoUserPoolClientF7AACFA5",
+                "UserPoolClient.ClientSecret",
+              ],
+            },
           },
         },
         "Handler": "index.handler",
@@ -153,6 +216,73 @@ exports[`snapshot test 1`] = `
         },
       },
       "Type": "AWS::Lambda::Permission",
+    },
+    "UserPoolappclientDescribeCognitoUserPoolClientCustomResourcePolicy40F445CE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "cognito-idp:DescribeUserPoolClient",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "UserPool6BA7E5F2",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "UserPoolappclientDescribeCognitoUserPoolClientCustomResourcePolicy40F445CE",
+        "Roles": [
+          {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "UserPoolappclientDescribeCognitoUserPoolClientF7AACFA5": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "UserPoolappclientDescribeCognitoUserPoolClientCustomResourcePolicy40F445CE",
+      ],
+      "Properties": {
+        "Create": {
+          "Fn::Join": [
+            "",
+            [
+              "{"region":"",
+              {
+                "Ref": "AWS::Region",
+              },
+              "","service":"CognitoIdentityServiceProvider","action":"describeUserPoolClient","parameters":{"UserPoolId":"",
+              {
+                "Ref": "UserPool6BA7E5F2",
+              },
+              "","ClientId":"",
+              {
+                "Ref": "UserPoolappclientE1BF3384",
+              },
+              ""},"physicalResourceId":{"id":"",
+              {
+                "Ref": "UserPoolappclientE1BF3384",
+              },
+              ""}}",
+            ],
+          ],
+        },
+        "InstallLatestAwsSdk": false,
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::DescribeCognitoUserPoolClient",
+      "UpdateReplacePolicy": "Delete",
     },
     "UserPoolappclientE1BF3384": {
       "Properties": {

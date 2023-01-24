@@ -15,7 +15,6 @@ export class CdkAppStack extends Stack {
     super(scope, id, props);
 
     const userPool = new cognito.UserPool(this, 'UserPool');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const appClient = userPool.addClient('app-client', {
       oAuth: {
         flows: {
@@ -46,6 +45,10 @@ export class CdkAppStack extends Stack {
       bundling: {
         sourceMap: true,
         minify: true,
+      },
+      environment: {
+        USERPOOL_CLIENT_ID: appClient.userPoolClientId,
+        USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.toString(), // TMP TODO: handling secret value
       },
     });
 
