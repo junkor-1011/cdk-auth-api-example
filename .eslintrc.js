@@ -23,7 +23,11 @@ module.exports = defineConfig({
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['packages/cdk-app/tsconfig.json', 'packages/fastify-app/tsconfig.json'],
+    project: [
+      'packages/cdk-app/tsconfig.json',
+      'packages/fastify-app/tsconfig.json',
+      'packages/lambda/tsconfig.json',
+    ],
   },
   rules: {},
   overrides: [],

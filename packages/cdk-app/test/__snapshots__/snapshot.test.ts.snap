@@ -96,6 +96,152 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "UserPool6BA7E5F2": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AccountRecoverySetting": {
+          "RecoveryMechanisms": [
+            {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": {
+          "AllowAdminCreateUserOnly": true,
+        },
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "LambdaConfig": {
+          "PreTokenGeneration": {
+            "Fn::GetAtt": [
+              "preTokenGenerationLambda1F130400",
+              "Arn",
+            ],
+          },
+        },
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "VerificationMessageTemplate": {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "UserPoolPreTokenGenerationCognito84D0CADA": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "preTokenGenerationLambda1F130400",
+            "Arn",
+          ],
+        },
+        "Principal": "cognito-idp.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "UserPool6BA7E5F2",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "UserPoolappclientE1BF3384": {
+      "Properties": {
+        "AllowedOAuthFlows": [
+          "code",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": [
+          "openid",
+        ],
+        "CallbackURLs": [
+          "https://example.com",
+        ],
+        "ExplicitAuthFlows": [
+          "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+          "ALLOW_REFRESH_TOKEN_AUTH",
+        ],
+        "GenerateSecret": true,
+        "RefreshTokenValidity": 120,
+        "SupportedIdentityProviders": [
+          "COGNITO",
+        ],
+        "TokenValidityUnits": {
+          "RefreshToken": "minutes",
+        },
+        "UserPoolId": {
+          "Ref": "UserPool6BA7E5F2",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+    "preTokenGenerationLambda1F130400": {
+      "DependsOn": [
+        "preTokenGenerationLambdaServiceRole0C3B4FA0",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "HASH-REPLACED.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.lambdaHandler",
+        "Role": {
+          "Fn::GetAtt": [
+            "preTokenGenerationLambdaServiceRole0C3B4FA0",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "preTokenGenerationLambdaServiceRole0C3B4FA0": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "webapiANYApiPermissionTestStackwebapi752F84DBANY564D8EBF": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
