@@ -10,6 +10,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.256.0",
     "@fastify/aws-lambda": "^3.2.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/swagger": "^8.3.0",
