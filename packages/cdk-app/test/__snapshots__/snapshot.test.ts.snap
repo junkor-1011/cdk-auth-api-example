@@ -333,6 +333,64 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::ApiGateway::Authorizer",
     },
+    "hello26396490": {
+      "DependsOn": [
+        "helloServiceRole353607D3",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "HASH-REPLACED.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.lambdaHandler",
+        "Role": {
+          "Fn::GetAtt": [
+            "helloServiceRole353607D3",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "helloServiceRole353607D3": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
     "preTokenGenerationLambda1F130400": {
       "DependsOn": [
         "preTokenGenerationLambdaServiceRole0C3B4FA0",
@@ -440,10 +498,12 @@ exports[`snapshot test 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "webapiDeployment17CB5080f6f65390c1ca02a1ce07bb6c135b02bd": {
+    "webapiDeployment17CB5080fef601e42ca9e7a289667fb99ae4c981": {
       "DependsOn": [
         "webapiproxyANY43102169",
         "webapiproxy467AA9A9",
+        "webapihelloGETAAA8CA38",
+        "webapihelloBB51E2BE",
       ],
       "Properties": {
         "Description": "Automatically created by the RestApi construct",
@@ -459,7 +519,7 @@ exports[`snapshot test 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "webapiDeployment17CB5080f6f65390c1ca02a1ce07bb6c135b02bd",
+          "Ref": "webapiDeployment17CB5080fef601e42ca9e7a289667fb99ae4c981",
         },
         "RestApiId": {
           "Ref": "webapiFE47F609",
@@ -473,6 +533,139 @@ exports[`snapshot test 1`] = `
         "Name": "test-webapi",
       },
       "Type": "AWS::ApiGateway::RestApi",
+    },
+    "webapihelloBB51E2BE": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "webapiFE47F609",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "hello",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "webapihelloGETAAA8CA38": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "hello26396490",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "webapihelloBB51E2BE",
+        },
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "webapihelloGETApiPermissionTestStackwebapi752F84DBGEThelloA49C3158": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "hello26396490",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "webapiFE47F609",
+              },
+              "/",
+              {
+                "Ref": "webapiDeploymentStageprodB0DEAB38",
+              },
+              "/GET/hello",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "webapihelloGETApiPermissionTestTestStackwebapi752F84DBGEThello865FA198": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "hello26396490",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "webapiFE47F609",
+              },
+              "/test-invoke-stage/GET/hello",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "webapiproxy467AA9A9": {
       "Properties": {

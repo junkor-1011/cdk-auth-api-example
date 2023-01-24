@@ -56,6 +56,16 @@ export class CdkAppStack extends Stack {
       },
     });
 
+    const helloLambda = new NodejsFunction(this, 'hello', {
+      entry: '../lambda/functions/hello/get.ts',
+      handler: 'lambdaHandler',
+      runtime: lambda.Runtime.NODEJS_18_X,
+      bundling: {
+        sourceMap: true,
+        minify: true,
+      },
+    });
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // const api = new apigateway.LambdaRestApi(this, 'webapi', {
     //   handler: backend,
@@ -72,5 +82,7 @@ export class CdkAppStack extends Stack {
       .addMethod('ANY', new apigateway.LambdaIntegration(backend), {
         authorizer: cognitoAuthorizer,
       });
+
+    api.root.addResource('hello').addMethod('GET', new apigateway.LambdaIntegration(helloLambda));
   }
 }
