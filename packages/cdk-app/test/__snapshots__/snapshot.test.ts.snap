@@ -131,6 +131,18 @@ exports[`snapshot test 1`] = `
               ],
             ],
           },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonCognitoPoserUser",
+              ],
+            ],
+          },
         ],
       },
       "Type": "AWS::IAM::Role",
@@ -157,6 +169,9 @@ exports[`snapshot test 1`] = `
                 "UserPoolappclientDescribeCognitoUserPoolClientF7AACFA5",
                 "UserPoolClient.ClientSecret",
               ],
+            },
+            "USERPOOL_ID": {
+              "Ref": "UserPool6BA7E5F2",
             },
           },
         },

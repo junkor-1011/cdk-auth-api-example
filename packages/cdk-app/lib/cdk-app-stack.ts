@@ -24,6 +24,9 @@ export class CdkAppStack extends Stack {
     roleBackendLambda.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
     );
+    roleBackendLambda.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonCognitoPoserUser'),
+    );
 
     const userPool = new cognito.UserPool(this, 'UserPool');
     const appClient = userPool.addClient('app-client', {
@@ -62,6 +65,7 @@ export class CdkAppStack extends Stack {
         minify: true,
       },
       environment: {
+        USERPOOL_ID: userPool.userPoolId,
         USERPOOL_CLIENT_ID: appClient.userPoolClientId,
         USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
       },
