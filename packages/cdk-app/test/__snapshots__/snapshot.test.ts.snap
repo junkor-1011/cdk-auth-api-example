@@ -92,43 +92,7 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
-    "FastifyAppLambda6A8D8BC0": {
-      "DependsOn": [
-        "FastifyAppLambdaServiceRole7FA32586",
-      ],
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
-          },
-          "S3Key": "HASH-REPLACED.zip",
-        },
-        "Environment": {
-          "Variables": {
-            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-            "USERPOOL_CLIENT_ID": {
-              "Ref": "UserPoolappclientE1BF3384",
-            },
-            "USERPOOL_CLIENT_SECRET": {
-              "Fn::GetAtt": [
-                "UserPoolappclientDescribeCognitoUserPoolClientF7AACFA5",
-                "UserPoolClient.ClientSecret",
-              ],
-            },
-          },
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "FastifyAppLambdaServiceRole7FA32586",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs18.x",
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "FastifyAppLambdaServiceRole7FA32586": {
+    "BackendLambdaRole563BEADE": {
       "Properties": {
         "AssumeRolePolicyDocument": {
           "Statement": [
@@ -155,9 +119,57 @@ exports[`snapshot test 1`] = `
               ],
             ],
           },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "FastifyAppLambda6A8D8BC0": {
+      "DependsOn": [
+        "BackendLambdaRole563BEADE",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "HASH-REPLACED.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "USERPOOL_CLIENT_ID": {
+              "Ref": "UserPoolappclientE1BF3384",
+            },
+            "USERPOOL_CLIENT_SECRET": {
+              "Fn::GetAtt": [
+                "UserPoolappclientDescribeCognitoUserPoolClientF7AACFA5",
+                "UserPoolClient.ClientSecret",
+              ],
+            },
+          },
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "BackendLambdaRole563BEADE",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs18.x",
+      },
+      "Type": "AWS::Lambda::Function",
     },
     "UserPool6BA7E5F2": {
       "DeletionPolicy": "Retain",
@@ -498,10 +510,13 @@ exports[`snapshot test 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "webapiDeployment17CB5080fef601e42ca9e7a289667fb99ae4c981": {
+    "webapiDeployment17CB5080645dd14794e3c9e3e6e31601cfe99e8c": {
       "DependsOn": [
         "webapiproxyANY43102169",
         "webapiproxy467AA9A9",
+        "webapiauthauthenticationPOST1868BC8F",
+        "webapiauthauthenticationFD8467B3",
+        "webapiauth847B52B1",
         "webapihelloGETAAA8CA38",
         "webapihelloBB51E2BE",
       ],
@@ -519,7 +534,7 @@ exports[`snapshot test 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "webapiDeployment17CB5080fef601e42ca9e7a289667fb99ae4c981",
+          "Ref": "webapiDeployment17CB5080645dd14794e3c9e3e6e31601cfe99e8c",
         },
         "RestApiId": {
           "Ref": "webapiFE47F609",
@@ -533,6 +548,151 @@ exports[`snapshot test 1`] = `
         "Name": "test-webapi",
       },
       "Type": "AWS::ApiGateway::RestApi",
+    },
+    "webapiauth847B52B1": {
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "webapiFE47F609",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "auth",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "webapiauthauthenticationFD8467B3": {
+      "Properties": {
+        "ParentId": {
+          "Ref": "webapiauth847B52B1",
+        },
+        "PathPart": "authentication",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "webapiauthauthenticationPOST1868BC8F": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "FastifyAppLambda6A8D8BC0",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "webapiauthauthenticationFD8467B3",
+        },
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "webapiauthauthenticationPOSTApiPermissionTestStackwebapi752F84DBPOSTauthauthentication903D906F": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "FastifyAppLambda6A8D8BC0",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "webapiFE47F609",
+              },
+              "/",
+              {
+                "Ref": "webapiDeploymentStageprodB0DEAB38",
+              },
+              "/POST/auth/authentication",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "webapiauthauthenticationPOSTApiPermissionTestTestStackwebapi752F84DBPOSTauthauthentication53058B3E": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "FastifyAppLambda6A8D8BC0",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              {
+                "Ref": "webapiFE47F609",
+              },
+              "/test-invoke-stage/POST/auth/authentication",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "webapihelloBB51E2BE": {
       "Properties": {

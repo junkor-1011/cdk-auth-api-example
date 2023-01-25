@@ -1,18 +1,29 @@
 import {
   Stack,
+  aws_iam as iam,
   aws_apigateway as apigateway,
   aws_lambda as lambda,
   aws_cognito as cognito,
   Duration,
 } from 'aws-cdk-lib';
 import type { StackProps } from 'aws-cdk-lib';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { NodejsFunction, type NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import type { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    });
+    roleBackendLambda.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+    );
+    roleBackendLambda.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
+    );
 
     const userPool = new cognito.UserPool(this, 'UserPool');
     const appClient = userPool.addClient('app-client', {
@@ -42,7 +53,7 @@ export class CdkAppStack extends Stack {
       cognitoUserPools: [userPool],
     });
 
-    const backend = new NodejsFunction(this, 'FastifyAppLambda', {
+    const backendLambdaOptions: NodejsFunctionProps = {
       entry: '../fastify-app/lambda.ts',
       handler: 'handler',
       runtime: lambda.Runtime.NODEJS_18_X,
@@ -54,6 +65,11 @@ export class CdkAppStack extends Stack {
         USERPOOL_CLIENT_ID: appClient.userPoolClientId,
         USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
       },
+      role: roleBackendLambda,
+    };
+
+    const backend = new NodejsFunction(this, 'FastifyAppLambda', {
+      ...backendLambdaOptions,
     });
 
     const helloLambda = new NodejsFunction(this, 'hello', {
@@ -82,6 +98,11 @@ export class CdkAppStack extends Stack {
       .addMethod('ANY', new apigateway.LambdaIntegration(backend), {
         authorizer: cognitoAuthorizer,
       });
+
+    api.root
+      .addResource('auth')
+      .addResource('authentication')
+      .addMethod('POST', new apigateway.LambdaIntegration(backend));
 
     api.root.addResource('hello').addMethod('GET', new apigateway.LambdaIntegration(helloLambda));
   }
