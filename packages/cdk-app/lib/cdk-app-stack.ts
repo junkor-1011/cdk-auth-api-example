@@ -25,7 +25,7 @@ export class CdkAppStack extends Stack {
       iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
     );
     roleBackendLambda.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonCognitoPoserUser'),
+      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonCognitoPowerUser'),
     );
 
     const userPool = new cognito.UserPool(this, 'UserPool');

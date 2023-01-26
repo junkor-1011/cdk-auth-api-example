@@ -139,7 +139,7 @@ exports[`snapshot test 1`] = `
                 {
                   "Ref": "AWS::Partition",
                 },
-                ":iam::aws:policy/service-role/AmazonCognitoPoserUser",
+                ":iam::aws:policy/service-role/AmazonCognitoPowerUser",
               ],
             ],
           },
