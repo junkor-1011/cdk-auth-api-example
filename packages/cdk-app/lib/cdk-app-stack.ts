@@ -105,7 +105,7 @@ export class CdkAppStack extends Stack {
 
     api.root
       .addResource('auth')
-      .addResource('authentication')
+      .addResource('authenticate')
       .addMethod('POST', new apigateway.LambdaIntegration(backend));
 
     api.root.addResource('hello').addMethod('GET', new apigateway.LambdaIntegration(helloLambda));

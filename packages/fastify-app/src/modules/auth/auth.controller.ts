@@ -1,30 +1,84 @@
+import { createHmac } from 'crypto';
 import {
   CognitoIdentityProviderClient,
   AdminCreateUserCommand,
+  AdminInitiateAuthCommand,
+  AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { ZodError } from 'zod';
 import {
   schemaOfCreateUserRequest,
   type TCreateUserRequest,
-  // TAuthenticateRequest,
+  schemaOfAuthenticateRequest,
+  type TAuthenticateRequest,
 } from './auth.schema';
+
+function calculateSecretHash(username: string, clientId: string, clientSecret: string): string {
+  const hasher = createHmac('sha256', clientSecret);
+  hasher.update(`${username}${clientId}`);
+
+  const secretHash = hasher.digest('base64');
+  return secretHash;
+}
 
 export const createUserHandler = async (
   request: FastifyRequest<{ Body: TCreateUserRequest }>,
   reply: FastifyReply,
 ): Promise<void> => {
+  request.log.info(`Authorization Header: ${request.headers.authorization ?? ''}`);
+
   try {
     const { username, password } = schemaOfCreateUserRequest.parse(request.body);
 
     const client = new CognitoIdentityProviderClient({});
     const command = new AdminCreateUserCommand({
-      UserPoolId: process.env.USERPOOL_ID ?? '', // TODO
+      UserPoolId: process.env.USERPOOL_ID ?? '',
       Username: username,
       TemporaryPassword: password,
     });
     const result = await client.send(command);
     await reply.code(201).send(result);
   } catch (err) {
+    if (err instanceof ZodError) {
+      request.log.info(err);
+      reply.badRequest('request body is wrong.');
+      return;
+    }
+    request.log.error(err);
+    reply.internalServerError();
+  }
+};
+
+export const authenticateHandler = async (
+  request: FastifyRequest<{ Body: TAuthenticateRequest }>,
+  reply: FastifyReply,
+): Promise<void> => {
+  try {
+    const { username, password } = schemaOfAuthenticateRequest.parse(request.body);
+
+    const secretHash = calculateSecretHash(
+      username,
+      process.env.USERPOOL_CLIENT_ID ?? '',
+      process.env.USERPOOL_CLIENT_SECRET ?? '',
+    );
+
+    const client = new CognitoIdentityProviderClient({});
+    const command = new AdminInitiateAuthCommand({
+      ClientId: process.env.USERPOOL_CLIENT_ID ?? '',
+      UserPoolId: process.env.USERPOOL_ID ?? '',
+      AuthFlow: AuthFlowType.ADMIN_USER_PASSWORD_AUTH,
+      AuthParameters: { USERNAME: username, PASSWORD: password, SECRET_HASH: secretHash },
+    });
+    const result = await client.send(command);
+
+    await reply.code(201).send(result);
+  } catch (err) {
+    if (err instanceof ZodError) {
+      request.log.info(err);
+      reply.badRequest('request body is wrong.');
+      return;
+    }
     request.log.error(err);
     reply.internalServerError();
   }

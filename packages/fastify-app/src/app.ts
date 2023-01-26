@@ -1,5 +1,7 @@
-import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
+import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
 import fastifySensible from '@fastify/sensible';
+
+import authRoutes from './modules/auth/auth.route';
 
 const defaultOption: FastifyServerOptions = {
   logger: true,
@@ -11,6 +13,10 @@ export const build = async (
   const server = fastify(opts);
 
   await server.register(fastifySensible);
+
+  await server.register(authRoutes, {
+    prefix: '/auth',
+  });
 
   return await server;
 };

@@ -513,12 +513,12 @@ exports[`snapshot test 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "webapiDeployment17CB5080645dd14794e3c9e3e6e31601cfe99e8c": {
+    "webapiDeployment17CB508015bef445cc8519b3df9c1fa0a49472ee": {
       "DependsOn": [
         "webapiproxyANY43102169",
         "webapiproxy467AA9A9",
-        "webapiauthauthenticationPOST1868BC8F",
-        "webapiauthauthenticationFD8467B3",
+        "webapiauthauthenticatePOSTF9712CA8",
+        "webapiauthauthenticateCE42AC78",
         "webapiauth847B52B1",
         "webapihelloGETAAA8CA38",
         "webapihelloBB51E2BE",
@@ -537,7 +537,7 @@ exports[`snapshot test 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "webapiDeployment17CB5080645dd14794e3c9e3e6e31601cfe99e8c",
+          "Ref": "webapiDeployment17CB508015bef445cc8519b3df9c1fa0a49472ee",
         },
         "RestApiId": {
           "Ref": "webapiFE47F609",
@@ -567,59 +567,19 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::ApiGateway::Resource",
     },
-    "webapiauthauthenticationFD8467B3": {
+    "webapiauthauthenticateCE42AC78": {
       "Properties": {
         "ParentId": {
           "Ref": "webapiauth847B52B1",
         },
-        "PathPart": "authentication",
+        "PathPart": "authenticate",
         "RestApiId": {
           "Ref": "webapiFE47F609",
         },
       },
       "Type": "AWS::ApiGateway::Resource",
     },
-    "webapiauthauthenticationPOST1868BC8F": {
-      "Properties": {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "POST",
-        "Integration": {
-          "IntegrationHttpMethod": "POST",
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:",
-                {
-                  "Ref": "AWS::Region",
-                },
-                ":lambda:path/2015-03-31/functions/",
-                {
-                  "Fn::GetAtt": [
-                    "FastifyAppLambda6A8D8BC0",
-                    "Arn",
-                  ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": {
-          "Ref": "webapiauthauthenticationFD8467B3",
-        },
-        "RestApiId": {
-          "Ref": "webapiFE47F609",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "webapiauthauthenticationPOSTApiPermissionTestStackwebapi752F84DBPOSTauthauthentication903D906F": {
+    "webapiauthauthenticatePOSTApiPermissionTestStackwebapi752F84DBPOSTauthauthenticateE30576D1": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -653,14 +613,14 @@ exports[`snapshot test 1`] = `
               {
                 "Ref": "webapiDeploymentStageprodB0DEAB38",
               },
-              "/POST/auth/authentication",
+              "/POST/auth/authenticate",
             ],
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "webapiauthauthenticationPOSTApiPermissionTestTestStackwebapi752F84DBPOSTauthauthentication53058B3E": {
+    "webapiauthauthenticatePOSTApiPermissionTestTestStackwebapi752F84DBPOSTauthauthenticate4DC0C73F": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -690,12 +650,52 @@ exports[`snapshot test 1`] = `
               {
                 "Ref": "webapiFE47F609",
               },
-              "/test-invoke-stage/POST/auth/authentication",
+              "/test-invoke-stage/POST/auth/authenticate",
             ],
           ],
         },
       },
       "Type": "AWS::Lambda::Permission",
+    },
+    "webapiauthauthenticatePOSTF9712CA8": {
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "FastifyAppLambda6A8D8BC0",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": {
+          "Ref": "webapiauthauthenticateCE42AC78",
+        },
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
     },
     "webapihelloBB51E2BE": {
       "Properties": {
