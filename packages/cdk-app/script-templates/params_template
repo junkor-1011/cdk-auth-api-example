@@ -1,0 +1,10 @@
+# EXAMPLE VALUES
+
+AWS_PROFILE="default"
+REGION="ap-northeast-1"
+USER_POOL_ID="ap-northeast-1_XXXXXXXXX"
+COGNITO_USER_NAME="hyperuser"
+COGNITO_USER_PASSWORD="P@ssw0rd"
+COGNITO_CLIENT_ID="xxxxxxxx"
+API_STAGE="stage"
+API_URL_BASE="https://xxxxxxxxxx.execute-api.${REGION:-ap-northeast-1}.amazonaws.com/${API_STAGE:-prod}"
