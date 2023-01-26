@@ -115,18 +115,6 @@ exports[`snapshot test 1`] = `
                 {
                   "Ref": "AWS::Partition",
                 },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
                 ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
               ],
             ],
@@ -139,7 +127,7 @@ exports[`snapshot test 1`] = `
                 {
                   "Ref": "AWS::Partition",
                 },
-                ":iam::aws:policy/service-role/AmazonCognitoPowerUser",
+                ":iam::aws:policy/AmazonCognitoPowerUser",
               ],
             ],
           },

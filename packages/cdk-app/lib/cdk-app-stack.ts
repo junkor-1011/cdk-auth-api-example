@@ -18,14 +18,14 @@ export class CdkAppStack extends Stack {
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
     });
-    roleBackendLambda.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-    );
+    // roleBackendLambda.addManagedPolicy(
+    //   iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+    // );
     roleBackendLambda.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
     );
     roleBackendLambda.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonCognitoPowerUser'),
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonCognitoPowerUser'),
     );
 
     const userPool = new cognito.UserPool(this, 'UserPool');
