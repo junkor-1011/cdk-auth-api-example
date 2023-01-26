@@ -5,6 +5,7 @@ import {
   AdminInitiateAuthCommand,
   AuthFlowType,
   UserNotFoundException,
+  AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { ZodError } from 'zod';
@@ -38,7 +39,17 @@ export const createUserHandler = async (
       Username: username,
       TemporaryPassword: password,
     });
-    const result = await client.send(command);
+    const createResult = await client.send(command);
+    request.log.info(createResult);
+
+    const commandForPasswordChange = new AdminSetUserPasswordCommand({
+      UserPoolId: process.env.USERPOOL_ID ?? '',
+      Username: username,
+      Password: password,
+      Permanent: true,
+    });
+    const result = await client.send(commandForPasswordChange);
+    request.log.info(result);
     await reply.code(201).send(result);
   } catch (err) {
     if (err instanceof ZodError) {
@@ -78,7 +89,9 @@ export const authenticateHandler = async (
     });
     const result = await client.send(command);
 
-    await reply.code(201).send(result);
+    request.log.info(result);
+
+    await reply.code(200).send(result.AuthenticationResult);
   } catch (err) {
     if (err instanceof ZodError) {
       request.log.info(err);
