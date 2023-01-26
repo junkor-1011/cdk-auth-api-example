@@ -4,6 +4,7 @@ import {
   AdminCreateUserCommand,
   AdminInitiateAuthCommand,
   AuthFlowType,
+  UserNotFoundException,
 } from '@aws-sdk/client-cognito-identity-provider';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { ZodError } from 'zod';
@@ -45,6 +46,11 @@ export const createUserHandler = async (
       reply.badRequest('request body is wrong.');
       return;
     }
+    if (err instanceof UserNotFoundException) {
+      request.log.info(err);
+      reply.badRequest('User Not Found.');
+      return;
+    }
     request.log.error(err);
     reply.internalServerError();
   }
@@ -77,6 +83,11 @@ export const authenticateHandler = async (
     if (err instanceof ZodError) {
       request.log.info(err);
       reply.badRequest('request body is wrong.');
+      return;
+    }
+    if (err instanceof UserNotFoundException) {
+      request.log.info(err);
+      reply.badRequest('User Not Found.');
       return;
     }
     request.log.error(err);
