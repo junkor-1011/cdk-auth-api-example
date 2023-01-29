@@ -2,6 +2,7 @@ import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastif
 import fastifySensible from '@fastify/sensible';
 
 import authRoutes from './modules/auth/auth.route';
+import greetRoute from './modules/greet/greet.route';
 
 const defaultOption: FastifyServerOptions = {
   logger: true,
@@ -16,6 +17,9 @@ export const build = async (
 
   await server.register(authRoutes, {
     prefix: '/auth',
+  });
+  await server.register(greetRoute, {
+    prefix: '/greet',
   });
 
   return await server;
