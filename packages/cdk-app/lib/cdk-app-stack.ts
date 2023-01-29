@@ -24,9 +24,9 @@ export class CdkAppStack extends Stack {
     roleBackendLambda.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
     );
-    roleBackendLambda.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonCognitoPowerUser'),
-    );
+    // roleBackendLambda.addManagedPolicy(
+    //   iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonCognitoPowerUser'),
+    // );
 
     const userPool = new cognito.UserPool(this, 'UserPool');
     const appClient = userPool.addClient('app-client', {
@@ -109,5 +109,16 @@ export class CdkAppStack extends Stack {
       .addMethod('POST', new apigateway.LambdaIntegration(backend));
 
     api.root.addResource('hello').addMethod('GET', new apigateway.LambdaIntegration(helloLambda));
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const policyCognitoActionForBackend = new iam.Policy(this, 'CognitoActionForBackend', {
+      statements: [
+        new iam.PolicyStatement({
+          actions: ['cognito-idp:*'],
+          resources: [userPool.userPoolArn],
+        }),
+      ],
+      roles: [roleBackendLambda],
+    });
   }
 }
