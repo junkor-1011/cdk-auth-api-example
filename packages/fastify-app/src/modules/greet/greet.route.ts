@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 
 import { type FastifyInstance } from 'fastify';
-import { greetHandler } from './greet.controller';
+import { greetHandler } from './greet.controller.js';
 
 const greetRoute = async (server: FastifyInstance): Promise<void> => {
   server.get('/', {

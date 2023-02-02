@@ -7,8 +7,13 @@ import {
   Duration,
 } from 'aws-cdk-lib';
 import type { StackProps } from 'aws-cdk-lib';
-import { NodejsFunction, type NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
+import {
+  NodejsFunction,
+  OutputFormat,
+  type NodejsFunctionProps,
+} from 'aws-cdk-lib/aws-lambda-nodejs';
 import type { Construct } from 'constructs';
+import path = require('path');
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkAppStack extends Stack {
@@ -63,6 +68,12 @@ export class CdkAppStack extends Stack {
       bundling: {
         sourceMap: true,
         minify: true,
+        format: OutputFormat.ESM,
+        externalModules: ['@aws-sdk/*'],
+        tsconfig: path.join(__dirname, '../../fastify-app/tsconfig-prod.json'),
+        target: 'es2022',
+        banner:
+          'import { createRequire as topLevelCreateRequire } from "module"; import url from "url"; const require = topLevelCreateRequire(import.meta.url); const __filename = url.fileURLToPath(import.meta.url); const __dirname = url.fileURLToPath(new URL(".", import.meta.url));',
       },
       environment: {
         USERPOOL_ID: userPool.userPoolId,

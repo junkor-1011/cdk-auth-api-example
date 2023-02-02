@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2021",
+    "target": "es2022",
     "lib": ["esnext"],
-    "module": "commonjs",
+    "module": "nodenext",
     "baseUrl": "./",
     "paths": {
       "$api/*": ["src/*"]

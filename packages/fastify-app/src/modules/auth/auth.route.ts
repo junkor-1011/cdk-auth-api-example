@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 
 import { type FastifyInstance } from 'fastify';
-import { createUserHandler, authenticateHandler } from './auth.controller';
+import { createUserHandler, authenticateHandler } from './auth.controller.js';
 
 const authRoutes = async (server: FastifyInstance): Promise<void> => {
   server.post('/create-user', {

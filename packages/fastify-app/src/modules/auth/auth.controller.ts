@@ -15,7 +15,7 @@ import {
   type TCreateUserRequest,
   schemaOfAuthenticateRequest,
   type TAuthenticateRequest,
-} from './auth.schema';
+} from './auth.schema.js';
 
 function calculateSecretHash(username: string, clientId: string, clientSecret: string): string {
   const hasher = createHmac('sha256', clientSecret);

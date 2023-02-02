@@ -1,6 +1,6 @@
 import awsLambdaFastify from '@fastify/aws-lambda';
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda';
-import { build } from './src/app';
+import { build } from './src/app.js';
 
 // TODO: generate db client out of Lambda Handler.
 

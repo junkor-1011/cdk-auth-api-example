@@ -1,8 +1,8 @@
 import fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
 import fastifySensible from '@fastify/sensible';
 
-import authRoutes from './modules/auth/auth.route';
-import greetRoute from './modules/greet/greet.route';
+import authRoutes from './modules/auth/auth.route.js';
+import greetRoute from './modules/greet/greet.route.js';
 
 const defaultOption: FastifyServerOptions = {
   logger: true,

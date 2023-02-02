@@ -9,6 +9,8 @@ const config = {
       'esbuild-jest',
       {
         sourcemap: true,
+        target: 'esnext',
+        format: 'esm',
       },
     ],
   },

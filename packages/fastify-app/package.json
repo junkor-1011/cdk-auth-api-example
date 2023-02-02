@@ -2,7 +2,8 @@
   "name": "fastify-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.mjs",
   "scripts": {
     "build": "esbuild src/main.ts --outdir=dist --platform=node --minify --bundle --tsconfig=tsconfig-prod.json",
     "dev": "dotenv -e .env.local tsx watch src/main.ts",
