@@ -4,6 +4,8 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
+import { myIp } from '$lambda/lib/myIp.js';
+
 const url = 'http://checkip.amazonaws.com';
 
 export const lambdaHandler = async (
@@ -20,6 +22,7 @@ export const lambdaHandler = async (
       body: JSON.stringify({
         message: 'hello world',
         url: myUrl,
+        myIp,
       }),
     };
   } catch (err) {

@@ -16,6 +16,18 @@ import type { Construct } from 'constructs';
 import path = require('path');
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
+const esmBanner =
+  'import { createRequire as topLevelCreateRequire } from "module"; import url from "url"; const require = topLevelCreateRequire(import.meta.url); const __filename = url.fileURLToPath(import.meta.url); const __dirname = url.fileURLToPath(new URL(".", import.meta.url));';
+
+const lambdaBundlingOption: NodejsFunctionProps['bundling'] = {
+  sourceMap: true,
+  minify: true,
+  format: OutputFormat.ESM,
+  tsconfig: path.join(__dirname, '../../lambda/tsconfig.json'),
+  banner: esmBanner,
+  externalModules: ['@aws-sdk/*'],
+};
+
 export class CdkAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -50,9 +62,7 @@ export class CdkAppStack extends Stack {
       entry: '../lambda/functions/cognito/preTokenGeneration.ts',
       handler: 'lambdaHandler',
       runtime: lambda.Runtime.NODEJS_18_X,
-      bundling: {
-        sourceMap: true,
-      },
+      bundling: lambdaBundlingOption,
     });
 
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGenerationLambda);
@@ -71,7 +81,6 @@ export class CdkAppStack extends Stack {
         format: OutputFormat.ESM,
         externalModules: ['@aws-sdk/*'],
         tsconfig: path.join(__dirname, '../../fastify-app/tsconfig-prod.json'),
-        target: 'es2022',
         banner:
           'import { createRequire as topLevelCreateRequire } from "module"; import url from "url"; const require = topLevelCreateRequire(import.meta.url); const __filename = url.fileURLToPath(import.meta.url); const __dirname = url.fileURLToPath(new URL(".", import.meta.url));',
       },
@@ -91,10 +100,7 @@ export class CdkAppStack extends Stack {
       entry: '../lambda/functions/hello/get.ts',
       handler: 'lambdaHandler',
       runtime: lambda.Runtime.NODEJS_18_X,
-      bundling: {
-        sourceMap: true,
-        minify: true,
-      },
+      bundling: lambdaBundlingOption,
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
