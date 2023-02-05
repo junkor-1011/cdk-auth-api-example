@@ -1,5 +1,6 @@
 import {
   Stack,
+  aws_ec2 as ec2,
   aws_iam as iam,
   aws_apigateway as apigateway,
   aws_lambda as lambda,
@@ -31,6 +32,15 @@ const lambdaBundlingOption: NodejsFunctionProps['bundling'] = {
 export class CdkAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    // Network
+    const vpc = new ec2.Vpc(this, 'AppVpc');
+
+    // EC2
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const bastionHost = new ec2.BastionHostLinux(this, 'BastionHost', {
+      vpc,
+    });
 
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),

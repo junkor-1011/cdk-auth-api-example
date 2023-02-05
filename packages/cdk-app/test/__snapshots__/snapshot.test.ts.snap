@@ -3,6 +3,12 @@
 exports[`snapshot test 1`] = `
 {
   "Outputs": {
+    "BastionHostBastionHostIdC743CBD6": {
+      "Description": "Instance ID of the bastion host. Use this to connect via SSM Session Manager",
+      "Value": {
+        "Ref": "BastionHost30F9ED05",
+      },
+    },
     "webapiEndpoint3B3FAFEB": {
       "Value": {
         "Fn::Join": [
@@ -35,6 +41,10 @@ exports[`snapshot test 1`] = `
       "Default": "/cdk-bootstrap/hnb659fds/version",
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
     },
   },
   "Resources": {
@@ -92,6 +102,397 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::IAM::Role",
     },
+    "AppVpc80F1F7F9": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "AppVpcIGW826A76F0": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "AppVpcPrivateSubnet1DefaultRouteF1934EA6": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "AppVpcPublicSubnet1NATGateway0D5C928D",
+        },
+        "RouteTableId": {
+          "Ref": "AppVpcPrivateSubnet1RouteTableEBC6D985",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "AppVpcPrivateSubnet1RouteTableAssociation96B40FF1": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "AppVpcPrivateSubnet1RouteTableEBC6D985",
+        },
+        "SubnetId": {
+          "Ref": "AppVpcPrivateSubnet1Subnet191FA232",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "AppVpcPrivateSubnet1RouteTableEBC6D985": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "AppVpcPrivateSubnet1Subnet191FA232": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.128.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "AppVpcPrivateSubnet2DefaultRouteCBAB1884": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "AppVpcPublicSubnet2NATGatewayF1049000",
+        },
+        "RouteTableId": {
+          "Ref": "AppVpcPrivateSubnet2RouteTableD5D563B7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "AppVpcPrivateSubnet2RouteTableAssociationEF520DA2": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "AppVpcPrivateSubnet2RouteTableD5D563B7",
+        },
+        "SubnetId": {
+          "Ref": "AppVpcPrivateSubnet2Subnet9EA093CC",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "AppVpcPrivateSubnet2RouteTableD5D563B7": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "AppVpcPrivateSubnet2Subnet9EA093CC": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.192.0/18",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "AppVpcPublicSubnet1DefaultRouteC1B28749": {
+      "DependsOn": [
+        "AppVpcVPCGW1D33210A",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "AppVpcIGW826A76F0",
+        },
+        "RouteTableId": {
+          "Ref": "AppVpcPublicSubnet1RouteTable96CCB335",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "AppVpcPublicSubnet1EIPF0BFE5AB": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "AppVpcPublicSubnet1NATGateway0D5C928D": {
+      "DependsOn": [
+        "AppVpcPublicSubnet1DefaultRouteC1B28749",
+        "AppVpcPublicSubnet1RouteTableAssociationAFB11A1C",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "AppVpcPublicSubnet1EIPF0BFE5AB",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "AppVpcPublicSubnet1SubnetDD9E0A08",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "AppVpcPublicSubnet1RouteTable96CCB335": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "AppVpcPublicSubnet1RouteTableAssociationAFB11A1C": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "AppVpcPublicSubnet1RouteTable96CCB335",
+        },
+        "SubnetId": {
+          "Ref": "AppVpcPublicSubnet1SubnetDD9E0A08",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "AppVpcPublicSubnet1SubnetDD9E0A08": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "AppVpcPublicSubnet2DefaultRoute66E67257": {
+      "DependsOn": [
+        "AppVpcVPCGW1D33210A",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "AppVpcIGW826A76F0",
+        },
+        "RouteTableId": {
+          "Ref": "AppVpcPublicSubnet2RouteTable961D28F7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "AppVpcPublicSubnet2EIPB481EFAF": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "AppVpcPublicSubnet2NATGatewayF1049000": {
+      "DependsOn": [
+        "AppVpcPublicSubnet2DefaultRoute66E67257",
+        "AppVpcPublicSubnet2RouteTableAssociationD784754F",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "AppVpcPublicSubnet2EIPB481EFAF",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "AppVpcPublicSubnet2SubnetDFE2ABB8",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet2",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "AppVpcPublicSubnet2RouteTable961D28F7": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "AppVpcPublicSubnet2RouteTableAssociationD784754F": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "AppVpcPublicSubnet2RouteTable961D28F7",
+        },
+        "SubnetId": {
+          "Ref": "AppVpcPublicSubnet2SubnetDFE2ABB8",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "AppVpcPublicSubnet2SubnetDFE2ABB8": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.64.0/18",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "TestStack/AppVpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "AppVpcVPCGW1D33210A": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "AppVpcIGW826A76F0",
+        },
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
     "BackendLambdaRole563BEADE": {
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -122,6 +523,130 @@ exports[`snapshot test 1`] = `
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "BastionHost30F9ED05": {
+      "DependsOn": [
+        "BastionHostInstanceRoleDefaultPolicy17347525",
+        "BastionHostInstanceRoleDD3FA5F1",
+      ],
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "IamInstanceProfile": {
+          "Ref": "BastionHostInstanceProfile770FCA07",
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
+        "InstanceType": "t3.nano",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "BastionHostInstanceSecurityGroupE75D4274",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Ref": "AppVpcPrivateSubnet1Subnet191FA232",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BastionHost",
+          },
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash",
+        },
+      },
+      "Type": "AWS::EC2::Instance",
+    },
+    "BastionHostInstanceProfile770FCA07": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "BastionHostInstanceRoleDD3FA5F1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "BastionHostInstanceRoleDD3FA5F1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BastionHost",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "BastionHostInstanceRoleDefaultPolicy17347525": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "ssmmessages:*",
+                "ssm:UpdateInstanceInformation",
+                "ec2messages:*",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BastionHostInstanceRoleDefaultPolicy17347525",
+        "Roles": [
+          {
+            "Ref": "BastionHostInstanceRoleDD3FA5F1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BastionHostInstanceSecurityGroupE75D4274": {
+      "Properties": {
+        "GroupDescription": "TestStack/BastionHost/Resource/InstanceSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "BastionHost",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "CognitoActionForBackend105578C4": {
       "Properties": {
