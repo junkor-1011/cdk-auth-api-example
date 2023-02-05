@@ -540,7 +540,7 @@ exports[`snapshot test 1`] = `
         },
         "BlockDeviceMappings": [
           {
-            "DeviceName": "xvdh",
+            "DeviceName": "/dev/xvda",
             "Ebs": {
               "Encrypted": true,
               "VolumeSize": 12,

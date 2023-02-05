@@ -46,7 +46,7 @@ export class CdkAppStack extends Stack {
       ),
       blockDevices: [
         {
-          deviceName: 'xvdh',
+          deviceName: '/dev/xvda',
           volume: ec2.BlockDeviceVolume.ebs(12, {
             encrypted: true,
           }),
