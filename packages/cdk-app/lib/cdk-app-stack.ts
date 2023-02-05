@@ -44,12 +44,14 @@ export class CdkAppStack extends Stack {
         ec2.InstanceClass.BURSTABLE4_GRAVITON,
         ec2.InstanceSize.MICRO,
       ),
-      // blockDevices: [{
-      //   deviceName: 'EBSBastionHost',
-      //   volume: ec2.BlockDeviceVolume.ebs(16, {
-      //     encrypted: true,
-      //   })
-      // }],
+      blockDevices: [
+        {
+          deviceName: 'xvdh',
+          volume: ec2.BlockDeviceVolume.ebs(12, {
+            encrypted: true,
+          }),
+        },
+      ],
     });
 
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {

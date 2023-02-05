@@ -538,6 +538,15 @@ exports[`snapshot test 1`] = `
             },
           ],
         },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "xvdh",
+            "Ebs": {
+              "Encrypted": true,
+              "VolumeSize": 12,
+            },
+          },
+        ],
         "IamInstanceProfile": {
           "Ref": "BastionHostInstanceProfile770FCA07",
         },
