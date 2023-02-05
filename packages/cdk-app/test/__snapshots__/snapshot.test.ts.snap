@@ -140,7 +140,7 @@ exports[`snapshot test 1`] = `
         "VpcSecurityGroupIds": [
           {
             "Fn::GetAtt": [
-              "AppPostgreSecurityGroup7BF418E4",
+              "SGforDBClustor1F7DEB41",
               "GroupId",
             ],
           },
@@ -228,22 +228,6 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::SecretsManager::Secret",
       "UpdateReplacePolicy": "Delete",
-    },
-    "AppPostgreSecurityGroup7BF418E4": {
-      "Properties": {
-        "GroupDescription": "RDS security group",
-        "SecurityGroupEgress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "VpcId": {
-          "Ref": "AppVpc80F1F7F9",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
     },
     "AppPostgreSubnets1C6DCA46": {
       "Properties": {
@@ -886,6 +870,12 @@ exports[`snapshot test 1`] = `
                 ],
               ],
             },
+            "SECRETS_ARN": {
+              "Ref": "AppPostgreSecretAttachment7D6E9A0F",
+            },
+            "SECRETS_FULLARN": {
+              "Ref": "AppPostgreSecretAttachment7D6E9A0F",
+            },
             "USERPOOL_CLIENT_ID": {
               "Ref": "UserPoolappclientE1BF3384",
             },
@@ -910,6 +900,50 @@ exports[`snapshot test 1`] = `
         "Runtime": "nodejs18.x",
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "SGforDBClustor1F7DEB41": {
+      "Properties": {
+        "GroupDescription": "TestStack/SG-for-DBClustor",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "AppVpc80F1F7F9",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "AppVpc80F1F7F9",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":5432",
+                ],
+              ],
+            },
+            "FromPort": 5432,
+            "IpProtocol": "tcp",
+            "ToPort": 5432,
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "UserPool6BA7E5F2": {
       "DeletionPolicy": "Retain",
@@ -1188,6 +1222,12 @@ exports[`snapshot test 1`] = `
                   },
                 ],
               ],
+            },
+            "SECRETS_ARN": {
+              "Ref": "AppPostgreSecretAttachment7D6E9A0F",
+            },
+            "SECRETS_FULLARN": {
+              "Ref": "AppPostgreSecretAttachment7D6E9A0F",
             },
           },
         },

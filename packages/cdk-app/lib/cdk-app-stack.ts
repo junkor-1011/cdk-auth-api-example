@@ -56,6 +56,10 @@ export class CdkAppStack extends Stack {
     });
 
     // RDS
+    const sgForRds = new ec2.SecurityGroup(this, 'SG-for-DBClustor', {
+      vpc,
+    });
+    sgForRds.addIngressRule(ec2.Peer.ipv4(vpc.vpcCidrBlock), ec2.Port.tcp(5432));
     const dbCluster = new rds.DatabaseCluster(this, 'AppPostgre', {
       engine: rds.DatabaseClusterEngine.auroraPostgres({
         version: rds.AuroraPostgresEngineVersion.VER_14_5,
@@ -69,6 +73,7 @@ export class CdkAppStack extends Stack {
           subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
         },
         vpc,
+        securityGroups: [sgForRds],
       },
     });
 
@@ -107,6 +112,8 @@ export class CdkAppStack extends Stack {
         DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
         DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
         DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
+        SECRETS_ARN: dbCluster.secret?.secretArn ?? '',
+        SECRETS_FULLARN: dbCluster.secret?.secretFullArn ?? '',
       },
     });
 
@@ -136,6 +143,8 @@ export class CdkAppStack extends Stack {
         DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
         DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
         DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
+        SECRETS_ARN: dbCluster.secret?.secretArn ?? '',
+        SECRETS_FULLARN: dbCluster.secret?.secretFullArn ?? '',
       },
       role: roleBackendLambda,
     };
