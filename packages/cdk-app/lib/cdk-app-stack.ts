@@ -1,6 +1,7 @@
 import {
   Stack,
   aws_ec2 as ec2,
+  aws_rds as rds,
   aws_iam as iam,
   aws_apigateway as apigateway,
   aws_lambda as lambda,
@@ -54,6 +55,23 @@ export class CdkAppStack extends Stack {
       ],
     });
 
+    // RDS
+    const dbCluster = new rds.DatabaseCluster(this, 'AppPostgre', {
+      engine: rds.DatabaseClusterEngine.auroraPostgres({
+        version: rds.AuroraPostgresEngineVersion.VER_14_5,
+      }),
+      instanceProps: {
+        instanceType: ec2.InstanceType.of(
+          ec2.InstanceClass.BURSTABLE4_GRAVITON,
+          ec2.InstanceSize.MEDIUM,
+        ),
+        vpcSubnets: {
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
+        vpc,
+      },
+    });
+
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
     });
@@ -85,6 +103,11 @@ export class CdkAppStack extends Stack {
       handler: 'lambdaHandler',
       runtime: lambda.Runtime.NODEJS_18_X,
       bundling: lambdaBundlingOption,
+      environment: {
+        DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
+        DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
+        DB_CLUSTER_: dbCluster.clusterEndpoint.socketAddress,
+      },
     });
 
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGenerationLambda);
@@ -110,6 +133,9 @@ export class CdkAppStack extends Stack {
         USERPOOL_ID: userPool.userPoolId,
         USERPOOL_CLIENT_ID: appClient.userPoolClientId,
         USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
+        DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
+        DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
+        DB_CLUSTER_: dbCluster.clusterEndpoint.socketAddress,
       },
       role: roleBackendLambda,
     };
