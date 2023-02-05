@@ -106,7 +106,7 @@ export class CdkAppStack extends Stack {
       environment: {
         DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
         DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
-        DB_CLUSTER_: dbCluster.clusterEndpoint.socketAddress,
+        DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
       },
     });
 
@@ -135,7 +135,7 @@ export class CdkAppStack extends Stack {
         USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
         DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
         DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
-        DB_CLUSTER_: dbCluster.clusterEndpoint.socketAddress,
+        DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
       },
       role: roleBackendLambda,
     };
