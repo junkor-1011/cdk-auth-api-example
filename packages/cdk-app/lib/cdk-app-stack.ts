@@ -40,6 +40,16 @@ export class CdkAppStack extends Stack {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const bastionHost = new ec2.BastionHostLinux(this, 'BastionHost', {
       vpc,
+      instanceType: ec2.InstanceType.of(
+        ec2.InstanceClass.BURSTABLE4_GRAVITON,
+        ec2.InstanceSize.MICRO,
+      ),
+      // blockDevices: [{
+      //   deviceName: 'EBSBastionHost',
+      //   volume: ec2.BlockDeviceVolume.ebs(16, {
+      //     encrypted: true,
+      //   })
+      // }],
     });
 
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
