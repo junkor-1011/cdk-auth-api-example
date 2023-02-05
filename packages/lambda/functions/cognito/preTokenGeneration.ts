@@ -1,19 +1,36 @@
 import 'source-map-support';
-import type { CognitoUserPoolTriggerEvent, Context, Callback } from 'aws-lambda';
+import type {
+  PreTokenGenerationTriggerHandler,
+  PreTokenGenerationTriggerEvent,
+  Context,
+  // Callback,
+} from 'aws-lambda';
 
-// TODO: rewrite to async function
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const lambdaHandler = (
-  event: CognitoUserPoolTriggerEvent,
+// eslint-disable-next-line @typescript-eslint/require-await
+const genCustomClaim = async (): Promise<{
+  customKey1: string;
+  customKey2: string;
+  customKey3: string;
+}> => {
+  return {
+    customKey1: 'custom-string',
+    customKey2: 'red green blue',
+    customKey3: 'apple orange grape',
+  };
+};
+const customClaims = await genCustomClaim();
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export const lambdaHandler: PreTokenGenerationTriggerHandler = async (
+  event: PreTokenGenerationTriggerEvent,
   context: Context,
-  callback: Callback,
+  // callback: Callback,
+  // eslint-disable-next-line @typescript-eslint/require-await
 ) => {
   event.response = {
     claimsOverrideDetails: {
       claimsToAddOrOverride: {
-        customKey1: 'custom-string',
-        customKey2: 'red green blue',
-        customKey3: 'apple orange grape',
+        ...customClaims,
       },
       groupOverrideDetails: {
         groupsToOverride: ['group-A', 'group-B', 'group-C'],
@@ -21,5 +38,5 @@ export const lambdaHandler = (
     },
   };
 
-  callback(null, event);
+  return event;
 };
