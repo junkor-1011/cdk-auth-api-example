@@ -10,6 +10,7 @@ import {
 } from 'aws-cdk-lib';
 import type { StackProps } from 'aws-cdk-lib';
 import {
+  type ICommandHooks,
   NodejsFunction,
   OutputFormat,
   type NodejsFunctionProps,
@@ -21,6 +22,21 @@ import path = require('path');
 const esmBanner =
   'import { createRequire as topLevelCreateRequire } from "module"; import url from "url"; const require = topLevelCreateRequire(import.meta.url); const __filename = url.fileURLToPath(import.meta.url); const __dirname = url.fileURLToPath(new URL(".", import.meta.url));';
 
+const commandHooksForPrisma = {
+  beforeInstall(inputDir: string, outputDir: string): string[] {
+    return [``];
+  },
+  beforeBundling(inputDir: string, outputDir: string): string[] {
+    return [``];
+  },
+  afterBundling(inputDir: string, outputDir: string): string[] {
+    return [
+      `cp ${inputDir}/node_modules/.pnpm/prisma@*/node_modules/prisma/libquery_engine-rhel-openssl-1.0.x.so.node ${outputDir}`,
+      `cp ${inputDir}/packages/fastify-app/prisma/schema.prisma ${outputDir}`,
+    ];
+  },
+} as const satisfies ICommandHooks;
+
 const lambdaBundlingOption: NodejsFunctionProps['bundling'] = {
   sourceMap: true,
   minify: true,
@@ -28,6 +44,7 @@ const lambdaBundlingOption: NodejsFunctionProps['bundling'] = {
   tsconfig: path.join(__dirname, '../../lambda/tsconfig.json'),
   banner: esmBanner,
   externalModules: ['@aws-sdk/*'],
+  commandHooks: commandHooksForPrisma,
 };
 
 export class CdkAppStack extends Stack {
@@ -118,6 +135,7 @@ export class CdkAppStack extends Stack {
       bundling: lambdaBundlingOption,
       environment: {
         ...envForDBAccess,
+        STAGE: '',
       },
     });
 
@@ -139,12 +157,14 @@ export class CdkAppStack extends Stack {
         tsconfig: path.join(__dirname, '../../fastify-app/tsconfig-prod.json'),
         banner:
           'import { createRequire as topLevelCreateRequire } from "module"; import url from "url"; const require = topLevelCreateRequire(import.meta.url); const __filename = url.fileURLToPath(import.meta.url); const __dirname = url.fileURLToPath(new URL(".", import.meta.url));',
+        commandHooks: commandHooksForPrisma,
       },
       environment: {
         ...envForDBAccess,
         USERPOOL_ID: userPool.userPoolId,
         USERPOOL_CLIENT_ID: appClient.userPoolClientId,
         USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
+        STAGE: '',
       },
       role: roleBackendLambda,
     };

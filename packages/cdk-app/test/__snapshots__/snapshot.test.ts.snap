@@ -929,6 +929,7 @@ exports[`snapshot test 1`] = `
                 ],
               ],
             },
+            "STAGE": "",
             "USERPOOL_CLIENT_ID": {
               "Ref": "UserPoolappclientE1BF3384",
             },
@@ -1335,6 +1336,7 @@ exports[`snapshot test 1`] = `
                 ],
               ],
             },
+            "STAGE": "",
           },
         },
         "Handler": "index.lambdaHandler",
