@@ -3,6 +3,7 @@ import fastifySensible from '@fastify/sensible';
 
 import authRoutes from './modules/auth/auth.route.js';
 import greetRoute from './modules/greet/greet.route.js';
+import usersRoute from './modules/users/users.route.js';
 
 const defaultOption: FastifyServerOptions = {
   logger: true,
@@ -20,6 +21,9 @@ export const build = async (
   });
   await server.register(greetRoute, {
     prefix: '/greet',
+  });
+  await server.register(usersRoute, {
+    prefix: '/users',
   });
 
   return await server;
