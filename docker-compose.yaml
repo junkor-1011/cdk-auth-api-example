@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:14.6-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      # `./data`にDBのデータを永続化
+      - ./.tmp/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8'
+    hostname: postgres
+    restart: 'no'
+    user: root
+    # networks:
+    #   - db_network
+#   pgadmin4:
+#     image: dpage/pgadmin4:6.15
+#     container_name: pgadmin4
+#     ports:
+#       - 8080:80
+#     environment:
+#       PGADMIN_DEFAULT_EMAIL: test@example.com
+#       PGADMIN_DEFAULT_PASSWORD: p@ssword
+#     hostname: pgadmin4
+#     depends_on:
+#       - postgres
+#     restart: 'no'
+#     networks:
+#       - db_network
+#
+# # postgresとpgadmin4をdocker上のネットワークで接続しておく
+# networks:
+#   db_network:
+#     driver: bridge
