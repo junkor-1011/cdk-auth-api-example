@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  userid     String   @unique @db.VarChar(32)
+  role       Role     @default(USER)
+  message    String?  @db.VarChar(32)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
