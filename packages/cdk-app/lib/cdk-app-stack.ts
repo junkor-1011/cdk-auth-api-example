@@ -76,6 +76,14 @@ export class CdkAppStack extends Stack {
         securityGroups: [sgForRds],
       },
     });
+    const envForDBAccess = {
+      DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
+      DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
+      DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
+      SECRETS_ARN: dbCluster.secret?.secretArn ?? '',
+      SECRETS_FULLARN: dbCluster.secret?.secretFullArn ?? '',
+      SECRETS_NAME: dbCluster.secret?.secretName ?? '',
+    } as const;
 
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -109,11 +117,7 @@ export class CdkAppStack extends Stack {
       runtime: lambda.Runtime.NODEJS_18_X,
       bundling: lambdaBundlingOption,
       environment: {
-        DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
-        DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
-        DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
-        SECRETS_ARN: dbCluster.secret?.secretArn ?? '',
-        SECRETS_FULLARN: dbCluster.secret?.secretFullArn ?? '',
+        ...envForDBAccess,
       },
     });
 
@@ -137,14 +141,10 @@ export class CdkAppStack extends Stack {
           'import { createRequire as topLevelCreateRequire } from "module"; import url from "url"; const require = topLevelCreateRequire(import.meta.url); const __filename = url.fileURLToPath(import.meta.url); const __dirname = url.fileURLToPath(new URL(".", import.meta.url));',
       },
       environment: {
+        ...envForDBAccess,
         USERPOOL_ID: userPool.userPoolId,
         USERPOOL_CLIENT_ID: appClient.userPoolClientId,
         USERPOOL_CLIENT_SECRET: appClient.userPoolClientSecret.unsafeUnwrap(), // TMP TODO: handling secret value
-        DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
-        DB_CLUSTER_PORT: String(dbCluster.clusterEndpoint.port),
-        DB_CLUSTER_SOCKETADDRESS: dbCluster.clusterEndpoint.socketAddress,
-        SECRETS_ARN: dbCluster.secret?.secretArn ?? '',
-        SECRETS_FULLARN: dbCluster.secret?.secretFullArn ?? '',
       },
       role: roleBackendLambda,
     };
