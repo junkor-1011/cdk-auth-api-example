@@ -100,21 +100,25 @@ importers:
 
   packages/lambda:
     specifiers:
+      '@prisma/client': ^4.9.0
       '@types/aws-lambda': ^8.10.110
       '@types/node': 18.11.19
       '@vitest/ui': ^0.28.4
       axios: ^1.3.2
+      prisma: ^4.9.0
       source-map-support: ^0.5.21
       typescript: ~4.9.5
       vite: ^4.1.1
       vitest: ^0.28.4
     dependencies:
+      '@prisma/client': 4.9.0_prisma@4.9.0
       axios: 1.3.2
       source-map-support: 0.5.21
     devDependencies:
       '@types/aws-lambda': 8.10.110
       '@types/node': 18.11.19
       '@vitest/ui': 0.28.4
+      prisma: 4.9.0
       typescript: 4.9.5
       vite: 4.1.1_@types+node@18.11.19
       vitest: 0.28.4_@vitest+ui@0.28.4
