@@ -5,6 +5,8 @@
   "type": "module",
   "main": "index.mjs",
   "scripts": {
+    "seed": "tsx prisma/seed.ts",
+    "cleanup": "tsx prisma/cleanup.ts",
     "build": "esbuild src/main.ts --outdir=dist --platform=node --minify --bundle --tsconfig=tsconfig-prod.json",
     "dev": "dotenv -e .env.local tsx watch src/main.ts",
     "start": "node dist/main.js",
