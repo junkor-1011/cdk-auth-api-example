@@ -139,6 +139,7 @@ export class CdkAppStack extends Stack {
         STAGE: '',
       },
       role: rolePreTokenTriggerLambda,
+      timeout: Duration.seconds(30),
     });
 
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGenerationLambda);
@@ -169,6 +170,7 @@ export class CdkAppStack extends Stack {
         STAGE: '',
       },
       role: roleBackendLambda,
+      timeout: Duration.seconds(30),
     };
 
     const backend = new NodejsFunction(this, 'FastifyAppLambda', {
