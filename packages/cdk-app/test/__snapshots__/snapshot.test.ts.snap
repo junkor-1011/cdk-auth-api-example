@@ -945,6 +945,7 @@ exports[`snapshot test 1`] = `
           },
         },
         "Handler": "index.handler",
+        "MemorySize": 256,
         "Role": {
           "Fn::GetAtt": [
             "BackendLambdaRole563BEADE",
@@ -1398,6 +1399,7 @@ exports[`snapshot test 1`] = `
           },
         },
         "Handler": "index.lambdaHandler",
+        "MemorySize": 256,
         "Role": {
           "Fn::GetAtt": [
             "PreTokenTriggerLambdaRole57A11E78",
