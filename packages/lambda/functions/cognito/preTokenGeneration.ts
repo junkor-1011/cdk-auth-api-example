@@ -1,17 +1,14 @@
-import 'source-map-support';
+import 'source-map-support/register';
 import type {
   PreTokenGenerationTriggerHandler,
   PreTokenGenerationTriggerEvent,
   Context,
   // Callback,
 } from 'aws-lambda';
+import { prisma } from '$api/lib/prisma-client.js';
 
 // eslint-disable-next-line @typescript-eslint/require-await
-const genCustomClaim = async (): Promise<{
-  customKey1: string;
-  customKey2: string;
-  customKey3: string;
-}> => {
+const genCustomClaim = async (): Promise<Record<string, string>> => {
   return {
     customKey1: 'custom-string',
     customKey2: 'red green blue',
@@ -27,10 +24,30 @@ export const lambdaHandler: PreTokenGenerationTriggerHandler = async (
   // callback: Callback,
   // eslint-disable-next-line @typescript-eslint/require-await
 ) => {
+  const user = await prisma.user
+    .findUniqueOrThrow({
+      select: {
+        role: true,
+        message: true,
+      },
+      where: {
+        userid: event.userName,
+      },
+    })
+    .catch((err) => {
+      console.log(err);
+      return {
+        role: 'XXXX',
+        message: 'FAILED TO ACCESS DB.',
+      };
+    });
+
   event.response = {
     claimsOverrideDetails: {
       claimsToAddOrOverride: {
         ...customClaims,
+        'custom:role': user.role,
+        'custom:message': user.message ?? '',
       },
       groupOverrideDetails: {
         groupsToOverride: ['group-A', 'group-B', 'group-C'],

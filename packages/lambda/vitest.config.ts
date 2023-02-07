@@ -1,4 +1,4 @@
-// import path from 'path';
+import path from 'path';
 // import { fileURLToPath, URL } from 'url'
 import 'vitest/config';
 import { defineConfig } from 'vite';
@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       $lambda: __dirname,
+      $api: path.join(__dirname, '../fastify-app/src'),
     },
   },
 });
