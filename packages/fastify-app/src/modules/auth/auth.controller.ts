@@ -16,6 +16,7 @@ import {
   schemaOfAuthenticateRequest,
   type TAuthenticateRequest,
 } from './auth.schema.js';
+import { prisma } from '$api/lib/prisma-client.js';
 
 function calculateSecretHash(username: string, clientId: string, clientSecret: string): string {
   const hasher = createHmac('sha256', clientSecret);
@@ -32,7 +33,7 @@ export const createUserHandler = async (
   request.log.info(`Authorization Header: ${request.headers.authorization ?? ''}`);
 
   try {
-    const { username, password } = schemaOfCreateUserRequest.parse(request.body);
+    const { username, password, message, role } = schemaOfCreateUserRequest.parse(request.body);
 
     const client = new CognitoIdentityProviderClient({});
     const command = new AdminCreateUserCommand({
@@ -51,7 +52,17 @@ export const createUserHandler = async (
     });
     const result = await client.send(commandForPasswordChange);
     request.log.info(result);
-    await reply.code(201).send(result);
+
+    // register db
+    const user = await prisma.user.create({
+      data: {
+        userid: username,
+        message,
+        role,
+      },
+    });
+
+    await reply.code(201).send(user);
   } catch (err) {
     if (err instanceof ZodError) {
       request.log.info(err);
