@@ -955,6 +955,63 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::Lambda::Function",
     },
+    "PreTokenTriggerLambdaRole57A11E78": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ReadDBSecretValuesD66C715A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "secretsmanager:GetSecretValue",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "AppPostgreSecretAttachment7D6E9A0F",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ReadDBSecretValuesD66C715A",
+        "Roles": [
+          {
+            "Ref": "BackendLambdaRole563BEADE",
+          },
+          {
+            "Ref": "PreTokenTriggerLambdaRole57A11E78",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "SGforDBClustor1F7DEB41": {
       "Properties": {
         "GroupDescription": "TestStack/SG-for-DBClustor",
@@ -1233,7 +1290,7 @@ exports[`snapshot test 1`] = `
     },
     "preTokenGenerationLambda1F130400": {
       "DependsOn": [
-        "preTokenGenerationLambdaServiceRole0C3B4FA0",
+        "PreTokenTriggerLambdaRole57A11E78",
       ],
       "Properties": {
         "Code": {
@@ -1342,44 +1399,13 @@ exports[`snapshot test 1`] = `
         "Handler": "index.lambdaHandler",
         "Role": {
           "Fn::GetAtt": [
-            "preTokenGenerationLambdaServiceRole0C3B4FA0",
+            "PreTokenTriggerLambdaRole57A11E78",
             "Arn",
           ],
         },
         "Runtime": "nodejs18.x",
       },
       "Type": "AWS::Lambda::Function",
-    },
-    "preTokenGenerationLambdaServiceRole0C3B4FA0": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
     },
     "webapiAccount1B71C2D2": {
       "DeletionPolicy": "Retain",

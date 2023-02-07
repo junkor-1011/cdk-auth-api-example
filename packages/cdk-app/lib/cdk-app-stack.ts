@@ -105,15 +105,16 @@ export class CdkAppStack extends Stack {
     const roleBackendLambda = new iam.Role(this, 'BackendLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
     });
-    // roleBackendLambda.addManagedPolicy(
-    //   iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-    // );
     roleBackendLambda.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
     );
-    // roleBackendLambda.addManagedPolicy(
-    //   iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonCognitoPowerUser'),
-    // );
+
+    const rolePreTokenTriggerLambda = new iam.Role(this, 'PreTokenTriggerLambdaRole', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    });
+    rolePreTokenTriggerLambda.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
+    );
 
     const userPool = new cognito.UserPool(this, 'UserPool');
     const appClient = userPool.addClient('app-client', {
@@ -137,6 +138,7 @@ export class CdkAppStack extends Stack {
         ...envForDBAccess,
         STAGE: '',
       },
+      role: rolePreTokenTriggerLambda,
     });
 
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGenerationLambda);
@@ -213,6 +215,16 @@ export class CdkAppStack extends Stack {
         }),
       ],
       roles: [roleBackendLambda],
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const policyReadDBSecretManagerValue = new iam.Policy(this, 'ReadDBSecretValues', {
+      statements: [
+        new iam.PolicyStatement({
+          actions: ['secretsmanager:GetSecretValue'],
+          resources: [dbCluster.secret?.secretArn ?? ''],
+        }),
+      ],
+      roles: [roleBackendLambda, rolePreTokenTriggerLambda],
     });
   }
 }
