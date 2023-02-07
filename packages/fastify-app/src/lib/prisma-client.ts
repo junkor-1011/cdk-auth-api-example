@@ -20,10 +20,10 @@ const genDataSource = async (): Promise<Prisma.Datasource> => {
 
   const client = new SecretsManagerClient({});
   const command = new GetSecretValueCommand({
-    SecretId: process.env.SECRET_NAME,
+    SecretId: process.env.SECRETS_NAME,
   });
   const result = await client.send(command);
-  const secrets = secretsSchema.parse(result.SecretString);
+  const secrets = secretsSchema.parse(JSON.parse(result.SecretString ?? ''));
   const { username, password, host, port } = secrets;
 
   const url = `postgresql://${username}:${password}@${host}:${port}/appdb?schema=public&connection_limit=1`;

@@ -220,7 +220,12 @@ export class CdkAppStack extends Stack {
     const policyReadDBSecretManagerValue = new iam.Policy(this, 'ReadDBSecretValues', {
       statements: [
         new iam.PolicyStatement({
-          actions: ['secretsmanager:GetSecretValue'],
+          actions: [
+            // 'secretsmanager:GetResourcePolicy',
+            'secretsmanager:GetSecretValue',
+            // 'secretsmanager:DescribeSecret',
+            // 'secretsmanager:ListSecretVersionIds',
+          ],
           resources: [dbCluster.secret?.secretArn ?? ''],
         }),
       ],
