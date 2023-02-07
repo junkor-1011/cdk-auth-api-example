@@ -141,6 +141,11 @@ export class CdkAppStack extends Stack {
       role: rolePreTokenTriggerLambda,
       timeout: Duration.seconds(30),
       memorySize: 256,
+      vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        // subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      },
     });
 
     userPool.addTrigger(cognito.UserPoolOperation.PRE_TOKEN_GENERATION, preTokenGenerationLambda);
@@ -173,6 +178,11 @@ export class CdkAppStack extends Stack {
       role: roleBackendLambda,
       timeout: Duration.seconds(30),
       memorySize: 256,
+      vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        // subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      },
     };
 
     const backend = new NodejsFunction(this, 'FastifyAppLambda', {

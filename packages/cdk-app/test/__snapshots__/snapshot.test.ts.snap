@@ -826,6 +826,10 @@ exports[`snapshot test 1`] = `
     },
     "FastifyAppLambda6A8D8BC0": {
       "DependsOn": [
+        "AppVpcPrivateSubnet1DefaultRouteF1934EA6",
+        "AppVpcPrivateSubnet1RouteTableAssociation96B40FF1",
+        "AppVpcPrivateSubnet2DefaultRouteCBAB1884",
+        "AppVpcPrivateSubnet2RouteTableAssociationEF520DA2",
         "BackendLambdaRole563BEADE",
       ],
       "Properties": {
@@ -954,8 +958,48 @@ exports[`snapshot test 1`] = `
         },
         "Runtime": "nodejs18.x",
         "Timeout": 30,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "FastifyAppLambdaSecurityGroupDD164721",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": [
+            {
+              "Ref": "AppVpcPrivateSubnet1Subnet191FA232",
+            },
+            {
+              "Ref": "AppVpcPrivateSubnet2Subnet9EA093CC",
+            },
+          ],
+        },
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "FastifyAppLambdaSecurityGroupDD164721": {
+      "DependsOn": [
+        "AppVpcPrivateSubnet1DefaultRouteF1934EA6",
+        "AppVpcPrivateSubnet1RouteTableAssociation96B40FF1",
+        "AppVpcPrivateSubnet2DefaultRouteCBAB1884",
+        "AppVpcPrivateSubnet2RouteTableAssociationEF520DA2",
+      ],
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function TestStackFastifyAppLambda27DBB00E",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "PreTokenTriggerLambdaRole57A11E78": {
       "Properties": {
@@ -1292,6 +1336,10 @@ exports[`snapshot test 1`] = `
     },
     "preTokenGenerationLambda1F130400": {
       "DependsOn": [
+        "AppVpcPrivateSubnet1DefaultRouteF1934EA6",
+        "AppVpcPrivateSubnet1RouteTableAssociation96B40FF1",
+        "AppVpcPrivateSubnet2DefaultRouteCBAB1884",
+        "AppVpcPrivateSubnet2RouteTableAssociationEF520DA2",
         "PreTokenTriggerLambdaRole57A11E78",
       ],
       "Properties": {
@@ -1408,8 +1456,48 @@ exports[`snapshot test 1`] = `
         },
         "Runtime": "nodejs18.x",
         "Timeout": 30,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "preTokenGenerationLambdaSecurityGroup06F093D7",
+                "GroupId",
+              ],
+            },
+          ],
+          "SubnetIds": [
+            {
+              "Ref": "AppVpcPrivateSubnet1Subnet191FA232",
+            },
+            {
+              "Ref": "AppVpcPrivateSubnet2Subnet9EA093CC",
+            },
+          ],
+        },
       },
       "Type": "AWS::Lambda::Function",
+    },
+    "preTokenGenerationLambdaSecurityGroup06F093D7": {
+      "DependsOn": [
+        "AppVpcPrivateSubnet1DefaultRouteF1934EA6",
+        "AppVpcPrivateSubnet1RouteTableAssociation96B40FF1",
+        "AppVpcPrivateSubnet2DefaultRouteCBAB1884",
+        "AppVpcPrivateSubnet2RouteTableAssociationEF520DA2",
+      ],
+      "Properties": {
+        "GroupDescription": "Automatic security group for Lambda Function TestStackpreTokenGenerationLambda0964D018",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "AppVpc80F1F7F9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
     },
     "webapiAccount1B71C2D2": {
       "DeletionPolicy": "Retain",

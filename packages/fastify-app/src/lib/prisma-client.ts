@@ -27,6 +27,7 @@ const genDataSource = async (): Promise<Prisma.Datasource> => {
   const { username, password, host, port } = secrets;
 
   const url = `postgresql://${username}:${password}@${host}:${port}/appdb?schema=public&connection_limit=1`;
+  // console.log('[DEBUG]url: ', url);
   return { url };
 };
 
