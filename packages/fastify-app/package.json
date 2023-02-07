@@ -13,9 +13,9 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.264.0",
-    "@aws-sdk/client-s3": "^3.264.0",
-    "@aws-sdk/client-secrets-manager": "^3.264.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.266.0",
+    "@aws-sdk/client-s3": "^3.266.0",
+    "@aws-sdk/client-secrets-manager": "^3.266.0",
     "@fastify/aws-lambda": "^3.2.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/swagger": "^8.3.1",
@@ -28,9 +28,9 @@
   "devDependencies": {
     "@jest/globals": "^29.4.1",
     "@types/aws-lambda": "^8.10.110",
-    "@types/node": "18.11.19",
+    "@types/node": "18.13.0",
     "dotenv-cli": "^7.0.0",
-    "esbuild": "^0.17.5",
+    "esbuild": "^0.17.6",
     "esbuild-jest": "^0.5.0",
     "jest": "^29.4.1",
     "prisma": "^4.9.0",
