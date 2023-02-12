@@ -171,28 +171,6 @@ exports[`snapshot test 1`] = `
       "Type": "AWS::RDS::DBInstance",
       "UpdateReplacePolicy": "Delete",
     },
-    "AppPostgreInstance281596876": {
-      "DeletionPolicy": "Delete",
-      "DependsOn": [
-        "AppVpcPrivateSubnet1DefaultRouteF1934EA6",
-        "AppVpcPrivateSubnet1RouteTableAssociation96B40FF1",
-        "AppVpcPrivateSubnet2DefaultRouteCBAB1884",
-        "AppVpcPrivateSubnet2RouteTableAssociationEF520DA2",
-      ],
-      "Properties": {
-        "DBClusterIdentifier": {
-          "Ref": "AppPostgreCDD78744",
-        },
-        "DBInstanceClass": "db.t4g.medium",
-        "DBSubnetGroupName": {
-          "Ref": "AppPostgreSubnets1C6DCA46",
-        },
-        "Engine": "aurora-postgresql",
-        "PubliclyAccessible": false,
-      },
-      "Type": "AWS::RDS::DBInstance",
-      "UpdateReplacePolicy": "Delete",
-    },
     "AppPostgreSecretAttachment7D6E9A0F": {
       "Properties": {
         "SecretId": {

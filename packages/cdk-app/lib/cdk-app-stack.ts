@@ -92,6 +92,7 @@ export class CdkAppStack extends Stack {
         vpc,
         securityGroups: [sgForRds],
       },
+      instances: 1, // create writer instance only.(don't create reader instance)
     });
     const envForDBAccess = {
       DB_CLUSTER_HOSTNAME: dbCluster.clusterEndpoint.hostname,
