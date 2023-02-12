@@ -206,6 +206,118 @@ export class CdkAppStack extends Stack {
     const api = new apigateway.RestApi(this, 'webapi', {
       restApiName: 'test-webapi',
     });
+    api.addGatewayResponse('4XX', {
+      type: apigateway.ResponseType.DEFAULT_4XX,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "400", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('expired', {
+      type: apigateway.ResponseType.EXPIRED_TOKEN,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('invalid apikey', {
+      type: apigateway.ResponseType.INVALID_API_KEY,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('invalid signature', {
+      type: apigateway.ResponseType.INVALID_SIGNATURE,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('missing authentication token', {
+      type: apigateway.ResponseType.MISSING_AUTHENTICATION_TOKEN,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('quota exceeded', {
+      type: apigateway.ResponseType.QUOTA_EXCEEDED,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "429", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('request too large', {
+      type: apigateway.ResponseType.REQUEST_TOO_LARGE,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "413", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('resource not found', {
+      type: apigateway.ResponseType.RESOURCE_NOT_FOUND,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "404", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('throttled', {
+      type: apigateway.ResponseType.THROTTLED,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "429", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('unauthorized', {
+      type: apigateway.ResponseType.UNAUTHORIZED,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "401", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('unsupported media type', {
+      type: apigateway.ResponseType.UNSUPPORTED_MEDIA_TYPE,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "415", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('waf filtered', {
+      type: apigateway.ResponseType.WAF_FILTERED,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('access denied', {
+      type: apigateway.ResponseType.ACCESS_DENIED,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('5XX', {
+      type: apigateway.ResponseType.DEFAULT_5XX,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "500", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('integration failure', {
+      type: apigateway.ResponseType.INTEGRATION_FAILURE,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "504", "error": "$context.error.responseType" }',
+      },
+    });
+    api.addGatewayResponse('integration timeout', {
+      type: apigateway.ResponseType.INTEGRATION_TIMEOUT,
+      templates: {
+        'application/json':
+          '{ "message": $context.error.messageString, "statusCode": "504", "error": "$context.error.responseType" }',
+      },
+    });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const apiMain = api.root

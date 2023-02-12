@@ -1477,6 +1477,30 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
+    "webapi4XX6FA52053": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "400", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "DEFAULT_4XX",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapi5XXB09DA7BF": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "500", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "DEFAULT_5XX",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
     "webapiAccount1B71C2D2": {
       "DeletionPolicy": "Retain",
       "DependsOn": [
@@ -1526,8 +1550,11 @@ exports[`snapshot test 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "webapiDeployment17CB508015bef445cc8519b3df9c1fa0a49472ee": {
+    "webapiDeployment17CB5080264eb5639b548a3993e5a07af15a9f5e": {
       "DependsOn": [
+        "webapi4XX6FA52053",
+        "webapi5XXB09DA7BF",
+        "webapiaccessdeniedC4189BDA",
         "webapiproxyANY43102169",
         "webapiproxy467AA9A9",
         "webapiauthauthenticatePOSTF9712CA8",
@@ -1535,6 +1562,19 @@ exports[`snapshot test 1`] = `
         "webapiauth847B52B1",
         "webapihelloGETAAA8CA38",
         "webapihelloBB51E2BE",
+        "webapiexpired82276700",
+        "webapiintegrationfailure687F2456",
+        "webapiintegrationtimeout8C353696",
+        "webapiinvalidapikey23BED071",
+        "webapiinvalidsignature47723BF6",
+        "webapimissingauthenticationtoken2F3B1752",
+        "webapiquotaexceededF58382A1",
+        "webapirequesttoolarge6155A5A3",
+        "webapiresourcenotfoundFDCE2C24",
+        "webapithrottledA1C670A3",
+        "webapiunauthorized38D6A29A",
+        "webapiunsupportedmediatype2AC669AF",
+        "webapiwaffiltered1F99C6D5",
       ],
       "Properties": {
         "Description": "Automatically created by the RestApi construct",
@@ -1550,7 +1590,7 @@ exports[`snapshot test 1`] = `
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "webapiDeployment17CB508015bef445cc8519b3df9c1fa0a49472ee",
+          "Ref": "webapiDeployment17CB5080264eb5639b548a3993e5a07af15a9f5e",
         },
         "RestApiId": {
           "Ref": "webapiFE47F609",
@@ -1564,6 +1604,18 @@ exports[`snapshot test 1`] = `
         "Name": "test-webapi",
       },
       "Type": "AWS::ApiGateway::RestApi",
+    },
+    "webapiaccessdeniedC4189BDA": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "ACCESS_DENIED",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
     },
     "webapiauth847B52B1": {
       "Properties": {
@@ -1710,6 +1762,18 @@ exports[`snapshot test 1`] = `
       },
       "Type": "AWS::ApiGateway::Method",
     },
+    "webapiexpired82276700": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "EXPIRED_TOKEN",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
     "webapihelloBB51E2BE": {
       "Properties": {
         "ParentId": {
@@ -1842,6 +1906,66 @@ exports[`snapshot test 1`] = `
         },
       },
       "Type": "AWS::Lambda::Permission",
+    },
+    "webapiintegrationfailure687F2456": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "504", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "INTEGRATION_FAILURE",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiintegrationtimeout8C353696": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "504", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "INTEGRATION_TIMEOUT",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiinvalidapikey23BED071": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "INVALID_API_KEY",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiinvalidsignature47723BF6": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "INVALID_SIGNATURE",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapimissingauthenticationtoken2F3B1752": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "MISSING_AUTHENTICATION_TOKEN",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
     },
     "webapiproxy467AA9A9": {
       "Properties": {
@@ -1978,6 +2102,90 @@ exports[`snapshot test 1`] = `
         },
       },
       "Type": "AWS::Lambda::Permission",
+    },
+    "webapiquotaexceededF58382A1": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "429", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "QUOTA_EXCEEDED",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapirequesttoolarge6155A5A3": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "413", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "REQUEST_TOO_LARGE",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiresourcenotfoundFDCE2C24": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "404", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "RESOURCE_NOT_FOUND",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapithrottledA1C670A3": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "429", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "THROTTLED",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiunauthorized38D6A29A": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "401", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "UNAUTHORIZED",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiunsupportedmediatype2AC669AF": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "415", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "UNSUPPORTED_MEDIA_TYPE",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
+    },
+    "webapiwaffiltered1F99C6D5": {
+      "Properties": {
+        "ResponseTemplates": {
+          "application/json": "{ "message": $context.error.messageString, "statusCode": "403", "error": "$context.error.responseType" }",
+        },
+        "ResponseType": "WAF_FILTERED",
+        "RestApiId": {
+          "Ref": "webapiFE47F609",
+        },
+      },
+      "Type": "AWS::ApiGateway::GatewayResponse",
     },
   },
   "Rules": {
