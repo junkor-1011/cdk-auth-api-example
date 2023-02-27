@@ -10,6 +10,7 @@ export default defineConfig({
     coverage: {
       enabled: true,
     },
+    reporters: ['verbose'],
   },
   resolve: {
     alias: {
