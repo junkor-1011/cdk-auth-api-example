@@ -5,7 +5,7 @@ export const greetHandler = async (
   reply: FastifyReply,
 ): Promise<void> => {
   if (request.headers.authorization === undefined) {
-    request.log.error('Theis no headers');
+    request.log.error('There is no headers');
     request.log.error(request);
     reply.internalServerError();
     return;
