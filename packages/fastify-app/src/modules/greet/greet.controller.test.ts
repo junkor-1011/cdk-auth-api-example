@@ -22,4 +22,21 @@ describe('greetHandler', () => {
 
     expect(mockReply.internalServerError).toHaveBeenCalledTimes(1);
   });
+
+  it('jwt parse error', async () => {
+    const mockRequest = mockDeep<HandlerRequest>();
+    const mockReply = mockDeep<HandlerReply>();
+
+    const wrongAuthorizationHeader = 'xxx';
+
+    mockRequest.headers.authorization = wrongAuthorizationHeader;
+
+    await greetHandler(mockRequest, mockReply);
+
+    expect(mockRequest.log.error).toHaveBeenCalledTimes(2);
+    expect(mockRequest.log.error).toHaveBeenCalledWith(wrongAuthorizationHeader);
+    expect(mockRequest.log.error).toHaveBeenCalledWith(new Error('jwt format error'));
+
+    expect(mockReply.internalServerError).toHaveBeenCalledTimes(1);
+  });
 });
