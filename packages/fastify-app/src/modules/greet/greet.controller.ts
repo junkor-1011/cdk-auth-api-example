@@ -21,7 +21,7 @@ export const greetHandler = async (
     const decoded = Buffer.from(encoded, 'base64').toString();
 
     const payload = {
-      message: 'hello,',
+      message: 'hello',
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       jwtPayloads: JSON.parse(decoded) ?? {},
     };
