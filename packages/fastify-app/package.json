@@ -14,31 +14,31 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.279.0",
-    "@aws-sdk/client-s3": "^3.279.0",
-    "@aws-sdk/client-secrets-manager": "^3.279.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.299.0",
+    "@aws-sdk/client-s3": "^3.299.0",
+    "@aws-sdk/client-secrets-manager": "^3.299.0",
     "@fastify/aws-lambda": "^3.2.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/swagger": "^8.3.1",
-    "@fastify/swagger-ui": "^1.4.0",
-    "@prisma/client": "^4.10.1",
-    "fastify": "^4.13.0",
+    "@fastify/swagger-ui": "^1.5.0",
+    "@prisma/client": "^4.11.0",
+    "fastify": "^4.15.0",
     "fastify-zod": "^1.2.0",
-    "zod": "^3.20.6"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.111",
-    "@types/node": "18.14.2",
-    "@vitest/coverage-c8": "^0.29.1",
-    "@vitest/ui": "^0.29.1",
-    "dotenv-cli": "^7.0.0",
-    "esbuild": "^0.17.10",
-    "prisma": "^4.10.1",
+    "@types/aws-lambda": "^8.10.114",
+    "@types/node": "18.15.9",
+    "@vitest/coverage-c8": "^0.29.7",
+    "@vitest/ui": "^0.29.7",
+    "dotenv-cli": "^7.1.0",
+    "esbuild": "^0.17.13",
+    "prisma": "^4.11.0",
     "source-map-support": "^0.5.21",
-    "tsx": "^3.12.3",
-    "typescript": "~4.9.5",
-    "vite": "^4.1.4",
-    "vitest": "^0.29.1",
-    "vitest-mock-extended": "^1.0.9"
+    "tsx": "^3.12.6",
+    "typescript": "~5.0.2",
+    "vite": "^4.2.1",
+    "vitest": "^0.29.7",
+    "vitest-mock-extended": "^1.1.3"
   }
 }
