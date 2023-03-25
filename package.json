@@ -23,5 +23,10 @@
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@nestjs/core@<9.0.5": ">=9.0.5"
+    }
   }
 }
